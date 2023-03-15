@@ -1,3 +1,7 @@
+# create .env in the root folder add
+
+WEATHER_APP_SECRET=64e28f64b16b0f6cfeea0039ad3536da
+
 # Nuxt 3 Minimal Starter
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.

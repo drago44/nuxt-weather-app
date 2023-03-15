@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
   const cookie = useCookie('city');
   const config = useRuntimeConfig();
 
@@ -50,48 +50,72 @@
     },
   );
 
+  let today = new Date();
+
+  today = today.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
   const handleClick = () => {
     const formatedSearch = input.value.trim().split(' ').join('+');
     search.value = formatedSearch;
     input.value = '';
   };
+
+  const goBack = () => {
+    search.value = cookie.value;
+  };
 </script>
 
 <template>
-  <div class="h-screen relative overflow-hidden">
-    <img :src="background" />
-    <div class="absolute w-full h-full top-0 overlay" />
-    <div class="absolute w-full h-full top-0 p-48">
-      <div class="flex justify-between">
-        <div>
-          <h1 class="text-7xl text-white">{{ city.name }}</h1>
-          <p class="font-extralight text-2xl mt-2 text-white">Sunday Dec 9th</p>
-          <img
-            :src="`https://openweathermap.org/img/wn/${city.weather[0].icon}@4x.png`"
-            class="w-56 icon"
+  <div>
+    <div v-if="city" class="h-screen relative overflow-hidden">
+      <img :src="background" />
+      <div class="absolute w-full h-full top-0 overlay" />
+      <div class="absolute w-full h-full top-0 p-48">
+        <div class="flex justify-between">
+          <div>
+            <h1 class="text-7xl text-white">{{ city.name }}</h1>
+            <p class="font-extralight text-2xl mt-2 text-white">{{ today }}</p>
+            <img
+              :src="`https://openweathermap.org/img/wn/${city.weather[0].icon}@4x.png`"
+              class="w-56 icon"
+            />
+          </div>
+          <div>
+            <p class="text-9xl text-white font-extralight">
+              {{ city.main.temp }}°
+            </p>
+          </div>
+        </div>
+        <div class="mt-20 relative w-1/4">
+          <input
+            type="text"
+            class="w-full h-10 pl-2 pr-28"
+            placeholder="Search a city..."
+            v-model="input"
+            @keyup.enter="handleClick"
           />
-        </div>
-        <div>
-          <p class="text-9xl text-white font-extralight">
-            {{ city.main.temp }}°
-          </p>
+          <button
+            class="bg-sky-400 w-20 text-white h-10 absolute top-0 right-0"
+            @click="handleClick"
+          >
+            Search
+          </button>
         </div>
       </div>
-      <div class="mt-20 relative w-1/4">
-        <input
-          type="text"
-          class="w-full h-10 pl-2 pr-28"
-          placeholder="Search a city..."
-          v-model="input"
-          @keyup.enter="handleClick"
-        />
-        <button
-          class="bg-sky-400 w-20 text-white h-10 absolute top-0 right-0"
-          @click="handleClick"
-        >
-          Search
-        </button>
-      </div>
+    </div>
+    <div v-else class="p-10">
+      <h1 class="text-7xl">Oops, we can`t find that city</h1>
+      <button
+        class="mt-5 bg-sky-400 px-10 w-50 text-white h-10"
+        @click="goBack"
+      >
+        Go back
+      </button>
     </div>
   </div>
 </template>
